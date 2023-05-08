@@ -105,60 +105,49 @@ int main() {
 }
 //*завдання 3
 #include <iostream>
-#include <stdexcept>
 #include <vector>
 
 template<typename T>
 class Matrix {
 public:
-    Matrix(int rows, int cols) : rows_(rows), cols_(cols), data_(rows* cols) {}
+    Matrix(int rows, int cols) : rows(rows), cols(cols) {
+        data.resize(rows * cols);
+    }
 
-    Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_), data_(other.data_) {}
+    Matrix(const Matrix<T>& other) {
+        rows = other.rows;
+        cols = other.cols;
+        data = other.data;
+    }
 
-    ~Matrix() {}
+    ~Matrix() {
+        data.clear();
+    }
 
-    Matrix& operator=(const Matrix& other) {
-        if (this != &other) {
-            rows_ = other.rows_;
-            cols_ = other.cols_;
-            data_ = other.data_;
-        }
+    Matrix<T>& operator=(const Matrix<T>& other) {
+        rows = other.rows;
+        cols = other.cols;
+        data = other.data;
         return *this;
     }
 
     std::vector<T>& operator[](int row) {
-        if (row < 0 || row >= rows_) {
-            throw std::out_of_range("Invalid row index");
-        }
-        return data_.data() + row * cols_;
+        return data[row * cols];
     }
 
-    const std::vector<T>& operator[](int row) const {
-        if (row < 0 || row >= rows_) {
-            throw std::out_of_range("Invalid row index");
-        }
-        return data_.data() + row * cols_;
-    }
-
-    Matrix operator+(const Matrix& other) const {
-        if (rows_ != other.rows_ || cols_ != other.cols_) {
-            throw std::invalid_argument("Matrices must have the same dimensions");
-        }
-        Matrix result(rows_, cols_);
-        for (int i = 0; i < rows_; ++i) {
-            for (int j = 0; j < cols_; ++j) {
+    Matrix<T> operator+(const Matrix<T>& other) const {
+        Matrix<T> result(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 result[i][j] = (*this)[i][j] + other[i][j];
             }
         }
         return result;
     }
 
-    Matrix& operator+=(const Matrix& other) {
-        if (rows_ != other.rows_ || cols_ != other.cols_) {
-            throw std::invalid_argument("Matrices must have the same dimensions");
-        }
-        for (int i = 0; i < rows_; ++i) {
-            for (int j = 0; j < cols_; ++j) {
+    Matrix<T>& operator+=(const Matrix<T>& other) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 (*this)[i][j] += other[i][j];
             }
         }
@@ -166,8 +155,124 @@ public:
     }
 
 private:
-    int rows_;
-    int cols_;
-    std::vector<T> data_;
-};
+    int rows, cols;
+    std::vector<std::vector<T>> data;
+};int main() {
+    // створення матриці 3x3 зі значеннями 1
+    Matrix<int> m1(3, 3);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m1[i][j] = 1;
+        }
+    }
+
+    // створення матриці 3x3 зі значеннями 2
+    Matrix<int> m2(3, 3);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m2[i][j] = 2;
+        }
+    }
+
+    // виведення початкових матриць
+    std::cout << "Matrix 1:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m1[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    std::cout << "Matrix 2:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m2[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    // тестування операцій
+    Matrix<int> m3 = m1 + m2;
+    std::cout << "Matrix 1 + Matrix 2:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m3[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    m1 += m2;
+    std::cout << "Matrix 1 += Matrix 2:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m1[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
+int main() {
+    // створення матриці 3x3 зі значеннями 1
+    Matrix<int> m1(3, 3);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m1[i][j] = 1;
+        }
+    }
+
+    // створення матриці 3x3 зі значеннями 2
+    Matrix<int> m2(3, 3);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m2[i][j] = 2;
+        }
+    }
+
+    // виведення початкових матриць
+    std::cout << "Matrix 1:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m1[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    std::cout << "Matrix 2:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m2[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    // тестування операцій
+    Matrix<int> m3 = m1 + m2;
+    std::cout << "Matrix 1 + Matrix 2:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m3[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    m1 += m2;
+    std::cout << "Matrix 1 += Matrix 2:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << m1[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
 
