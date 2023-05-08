@@ -54,3 +54,53 @@ int main() {
 
     return 0;
 }
+
+//*завдання 2
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+// Функція для впорядкування масиву
+void bubbleSort(char* arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (strcmp(arr[j], arr[j + 1]) > 0) {
+                char* temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Функція бінарного пошуку
+int binarySearch(char* arr[], int left, int right, char* value) {
+    if (right >= left) {
+        int mid = left + (right - left) / 2;
+        if (strcmp(arr[mid], value) == 0) {
+            return mid;
+        }
+        if (strcmp(arr[mid], value) > 0) {
+            return binarySearch(arr, left, mid - 1, value);
+        }
+        return binarySearch(arr, mid + 1, right, value);
+    }
+    return -1;
+}
+
+int main() {
+    char* arr[] = { "apple", "banana", "cherry", "dates", "kiwi", "orange", "peach" };
+    int n = sizeof(arr) / sizeof(arr[0]);
+    bubbleSort(arr, n);
+    char* value = "kiwi";
+    int index = binarySearch(arr, 0, n - 1, value);
+    if (index == -1) {
+        cout << "Element not found" << endl;
+    }
+    else {
+        cout << "Element found at index " << index << endl;
+    }
+    return 0;
+}
+
