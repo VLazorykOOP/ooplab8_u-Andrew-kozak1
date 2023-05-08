@@ -103,4 +103,71 @@ int main() {
     }
     return 0;
 }
+//*завдання 3
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+
+template<typename T>
+class Matrix {
+public:
+    Matrix(int rows, int cols) : rows_(rows), cols_(cols), data_(rows* cols) {}
+
+    Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_), data_(other.data_) {}
+
+    ~Matrix() {}
+
+    Matrix& operator=(const Matrix& other) {
+        if (this != &other) {
+            rows_ = other.rows_;
+            cols_ = other.cols_;
+            data_ = other.data_;
+        }
+        return *this;
+    }
+
+    std::vector<T>& operator[](int row) {
+        if (row < 0 || row >= rows_) {
+            throw std::out_of_range("Invalid row index");
+        }
+        return data_.data() + row * cols_;
+    }
+
+    const std::vector<T>& operator[](int row) const {
+        if (row < 0 || row >= rows_) {
+            throw std::out_of_range("Invalid row index");
+        }
+        return data_.data() + row * cols_;
+    }
+
+    Matrix operator+(const Matrix& other) const {
+        if (rows_ != other.rows_ || cols_ != other.cols_) {
+            throw std::invalid_argument("Matrices must have the same dimensions");
+        }
+        Matrix result(rows_, cols_);
+        for (int i = 0; i < rows_; ++i) {
+            for (int j = 0; j < cols_; ++j) {
+                result[i][j] = (*this)[i][j] + other[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix& operator+=(const Matrix& other) {
+        if (rows_ != other.rows_ || cols_ != other.cols_) {
+            throw std::invalid_argument("Matrices must have the same dimensions");
+        }
+        for (int i = 0; i < rows_; ++i) {
+            for (int j = 0; j < cols_; ++j) {
+                (*this)[i][j] += other[i][j];
+            }
+        }
+        return *this;
+    }
+
+private:
+    int rows_;
+    int cols_;
+    std::vector<T> data_;
+};
 
